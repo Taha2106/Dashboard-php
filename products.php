@@ -11,100 +11,73 @@ include("components/header.php")
 
         </div>
         <div class="col-md-12 ">
-            <h3 px-3 py-3>Products</h3>
+<h3 class = "px-3 py-3">Products</h3>
             <table class="table">
                 <thead>
                     <tr>
 
                         <th scope="col">Image</th>
                         <th scope="col">Name</th>
-                        <th scope="col">Action</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Category Name</th>
+                        <th scope="col" colspan = '1'>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
 
 
-                    $query = $pdo->query("select * from categories");
+                    $query = $pdo->query("SELECT products.*, categories.name
+FROM products
+INNER JOIN categories
+ON products.product_category_name = categories.id");
                     $rows = $query->fetchAll(PDO::FETCH_ASSOC);
                     foreach ($rows as $keys) {
 
                     ?>
                         <tr>
-                            <th scope="row"><img src="<?php echo $catImgAddress . $keys['image']?>" alt="" width="100px" height='100px'></th>
+                            <th scope="row"><img src="<?php echo $prodImgAddress.$keys['product_image']?>" alt="" width="100px" height='100px'></th>
+                            <td><?php echo $keys['product_name']?></td>
+                            <td><?php echo $keys['product_price']?></td>
+                            <td><?php echo $keys['product_quantity']?></td>
+                            <td><?php echo $keys['product_desc']?></td>
                             <td><?php echo $keys['name']?></td>
-                            <td><a href="" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalUpdate<?php echo $keys['id']?>">Edit</a></td>
-                            <td><a href="" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete<?php echo $keys['id']?>">Delete</a></td>
+                            <td><a href="" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalUpdate<?php echo $keys['product_id']?>">Edit</a></td>
+                            <td><a href="" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteProduct<?php echo $keys['product_id']?>">Delete</a></td>
                         </tr>
 
-                        <!-- modal update -->
-      <div class="modal fade" id="modalUpdate<?php echo $keys['id']?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  
+
+
+
+
+
+<!-- modal delete  -->
+<div class="modal fade" id="deleteProduct<?php echo $keys['product_id']?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Update Category</h1>
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Update Product</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form method="post" enctype="multipart/form-data">
-                    <input type="hidden" name = 'catId' value = '<?php echo $keys['id']?>'>
-                    <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Category Name</label>
-                        <input type="text" name='catName' class="form-control" id="exampleInputEmail1"
-                            aria-describedby="emailHelp">
-                        <div id="emailHelp" class="form-text">
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleInputPassword1" class="form-label">Category Image</label>
-                        <input type="file" name='catImage' class="form-control" id="exampleInputPassword1">
-                        <img class="mt-3" src="<?php echo $catImgAddress.$keys['image']?>" alt="" width="100px" height="60px">
-                    </div>
-
-                    <button type="submit" name="UpdateCategory" class="btn btn-primary">Update Category</button>
-                </form>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-<!-- modal delete -->
-<div class="modal fade" id="modalDelete<?php echo $keys['id']?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Update Category</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="post" enctype="multipart/form-data">
-                <input type="hidden" name = 'catId' value = '<?php echo $keys['id']?>'>
+                <input type="hidden" name = 'prodId' value = '<?php echo $keys['product_id']?>'>
 
                     <div class="mb-3">
                         
                     </div>
                    
 
-                    <button type="submit" name="deleteCategory" class="btn btn-primary">Delete Category</button>
+                    <button type="submit" name="deleteProduct" class="btn btn-primary">Delete Product</button>
                 </form>
             </div>
 
         </div>
     </div>
 </div>
-
-
 
 
 
@@ -116,7 +89,7 @@ include("components/header.php")
             </table>
         </div>
     </div>
-</div>
+</div> 
 
 
 
@@ -147,15 +120,21 @@ include("components/header.php")
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Product Price</label>
-                        <input type="text" name='prodName' class="form-control" id="exampleInputEmail1"
+                        <input type="number" name='prodPrice' class="form-control" id="exampleInputEmail1"
                             aria-describedby="emailHelp">
                         <div id="emailHelp" class="form-text">
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Product Quantity</label>
-                        <input type="text" name='prodName' class="form-control" id="exampleInputEmail1"
+                        <input type="number" name='prodQuantity' class="form-control" id="exampleInputEmail1"
                             aria-describedby="emailHelp">
+                        <div id="emailHelp" class="form-text">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Product Description</label>
+                        <textarea class="form-control" name = 'prodDesc' id="largeTextBox" rows="5" placeholder="Type your sentence or paragraph here..."></textarea>
                         <div id="emailHelp" class="form-text">
                         </div>
                     </div>
@@ -167,9 +146,9 @@ include("components/header.php")
 
                     <div class="mb-3">
                         <label for="exampleInputPassword1" class="form-label">Select Product</label>
-                    <select class="form-select" aria-label="Default select example">
+                    <select class="form-select" name = "prodCatId" aria-label="Default select example">
 
-  <option selected = "hidden" >Open this select menu</option>
+  <option selected>Open this select menu</option>
 
 
   <?php 
